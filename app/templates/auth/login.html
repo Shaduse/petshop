@@ -1,81 +1,89 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PetShop - Вход и Регистрация</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-  <!-- Flash messages -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <div class="flash-messages">
-        {% for category, message in messages %}
-          <div class="flash {{ category }}">{{ message }}</div>
-        {% endfor %}
-      </div>
-    {% endif %}
-  {% endwith %}
+{% extends "base.html" %}
 
-  <div class="container" id="container">
+{% block title %}PetShop - Вход и Регистрация{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex items-center justify-center p-4 font-montserrat">
+  <div class="bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl relative" id="container">
+
     <!-- Registration Form -->
-    <div class="form-container sign-up">
-      <form action="{{ url_for('auth.register') }}" method="post">
+    <div class="absolute top-0 left-0 w-1/2 h-full transition-transform duration-700 ease-in-out" id="sign-up">
+      <form action="{{ url_for('auth.register') }}" method="post" data-validate class="bg-white flex flex-col items-center justify-center h-full px-12 py-8">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <h1>Создать аккаунт</h1>
-        <input type="text" name="username" placeholder="Имя пользователя" required>
-        <input type="email" name="email" placeholder="Электронная почта" required>
-        <input type="password" name="password" placeholder="Пароль" required>
-        <input type="password" name="password_confirm" placeholder="Подтвердите пароль" required>
-        <div class="privacy-checkbox">
-          <label>
-            <input type="checkbox" name="privacy_accepted" value="1" required>
-            <span>Я принимаю <a href="{{ url_for('main.privacy') }}" target="_blank">политику конфиденциальности</a></span>
-          </label>
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Создать аккаунт</h1>
+        <input type="text" name="username" placeholder="Имя пользователя" required class="w-full bg-gray-100 border-none rounded-lg px-4 py-3 mb-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <input type="email" name="email" placeholder="Электронная почта" required class="w-full bg-gray-100 border-none rounded-lg px-4 py-3 mb-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <input type="password" name="password" placeholder="Пароль" required class="w-full bg-gray-100 border-none rounded-lg px-4 py-3 mb-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <input type="password" name="password_confirm" placeholder="Подтвердите пароль" required class="w-full bg-gray-100 border-none rounded-lg px-4 py-3 mb-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <div class="flex items-start mb-4">
+          <input type="checkbox" name="privacy_accepted" value="1" required class="mt-1 mr-2">
+          <span class="text-sm text-gray-600">Я принимаю <a href="{{ url_for('main.privacy') }}" target="_blank" class="text-purple-600 hover:underline">политику конфиденциальности</a></span>
         </div>
-        <button type="submit">Зарегистрироваться</button>
+        <button type="submit" class="bg-purple-600 text-white rounded-lg px-8 py-3 font-semibold uppercase tracking-wide hover:bg-purple-700 transition-colors">Зарегистрироваться</button>
       </form>
     </div>
 
     <!-- Login Form -->
-    <div class="form-container sign-in">
-      <form action="{{ url_for('auth.login') }}" method="post">
+    <div class="absolute top-0 left-0 w-1/2 h-full transition-transform duration-700 ease-in-out" id="sign-in">
+      <form action="{{ url_for('auth.login') }}" method="post" data-validate class="bg-white flex flex-col items-center justify-center h-full px-12 py-8">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <h1>Войти</h1>
-        <input type="text" name="email" placeholder="Email или имя пользователя" required>
-        <input type="password" name="password" placeholder="Пароль" required>
-        <div class="remember-me">
-          <label>
-            <input type="checkbox" name="remember" value="1">
-            <span>Запомнить меня</span>
-          </label>
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Войти</h1>
+        <input type="text" name="email" placeholder="Email или имя пользователя" required class="w-full bg-gray-100 border-none rounded-lg px-4 py-3 mb-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <input type="password" name="password" placeholder="Пароль" required class="w-full bg-gray-100 border-none rounded-lg px-4 py-3 mb-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <div class="flex items-center w-full mb-3">
+          <input type="checkbox" name="remember" value="1" class="mr-2">
+          <span class="text-sm text-gray-600">Запомнить меня</span>
         </div>
-        <a href="{{ url_for('auth.forgot_password') }}">Забыли пароль?</a>
-        <button type="submit">Войти</button>
+        <a href="{{ url_for('auth.forgot_password') }}" class="text-purple-600 hover:underline mb-4 text-sm">Забыли пароль?</a>
+        <button type="submit" class="bg-purple-600 text-white rounded-lg px-8 py-3 font-semibold uppercase tracking-wide hover:bg-purple-700 transition-colors">Войти</button>
       </form>
     </div>
 
     <!-- Toggle Container -->
-    <div class="toggle-container">
-      <div class="toggle">
-        <div class="toggle-panel toggle-left">
-          <h1>Привет, друг!</h1>
-          <p>Зарегистрируйтесь, указав свои личные данные, чтобы использовать все функции сайта</p>
-          <button class="hidden" id="login">Войти</button>
+    <div class="absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition-transform duration-700 ease-in-out rounded-r-3xl" id="toggle-container">
+      <div class="bg-gradient-to-br from-blue-500 to-purple-600 text-white relative h-full">
+        <div class="absolute inset-0 flex flex-col items-center justify-center px-8 text-center transition-transform duration-700 ease-in-out" id="toggle-left">
+          <h1 class="text-3xl font-bold mb-4">Привет, друг!</h1>
+          <p class="text-lg mb-8">Зарегистрируйтесь, указав свои личные данные, чтобы использовать все функции сайта</p>
+          <button class="bg-transparent border-2 border-white text-white rounded-lg px-8 py-3 font-semibold uppercase tracking-wide hover:bg-white hover:text-purple-600 transition-colors" id="login">Войти</button>
         </div>
-        <div class="toggle-panel toggle-right">
-          <h1>С возвращением!</h1>
-          <p>Введите свои личные данные, чтобы использовать все функции сайта</p>
-          <button class="hidden" id="register">Зарегистрироваться</button>
+        <div class="absolute inset-0 flex flex-col items-center justify-center px-8 text-center transition-transform duration-700 ease-in-out translate-x-full" id="toggle-right">
+          <h1 class="text-3xl font-bold mb-4">С возвращением!</h1>
+          <p class="text-lg mb-8">Введите свои личные данные, чтобы использовать все функции сайта</p>
+          <button class="bg-transparent border-2 border-white text-white rounded-lg px-8 py-3 font-semibold uppercase tracking-wide hover:bg-white hover:text-purple-600 transition-colors" id="register">Зарегистрироваться</button>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
-</body>
-</html>
+<script>
+  const container = document.getElementById('container');
+  const signIn = document.getElementById('sign-in');
+  const signUp = document.getElementById('sign-up');
+  const toggleContainer = document.getElementById('toggle-container');
+  const toggleLeft = document.getElementById('toggle-left');
+  const toggleRight = document.getElementById('toggle-right');
+  const loginBtn = document.getElementById('login');
+  const registerBtn = document.getElementById('register');
+
+  registerBtn.addEventListener('click', () => {
+    container.classList.add('active');
+  });
+
+  loginBtn.addEventListener('click', () => {
+    container.classList.remove('active');
+  });
+
+  // CSS for active state
+  const style = document.createElement('style');
+  style.textContent = `
+    #container.active #sign-in { transform: translateX(100%); }
+    #container.active #sign-up { transform: translateX(100%); }
+    #container.active #toggle-container { transform: translateX(-100%); }
+    #container.active #toggle-left { transform: translateX(0); }
+    #container.active #toggle-right { transform: translateX(0); }
+  `;
+  document.head.appendChild(style);
+</script>
+{% endblock %}

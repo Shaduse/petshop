@@ -435,8 +435,107 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(err => {
             console.error('Cart update error:', err);
-            alert('Ошибка связи с сервером. Обновляем страницу...');
+            showNotification('Ошибка связи с сервером', 'error');
             location.reload();
         });
     }
+});
+
+// ============================================================================
+// FORM VALIDATION
+// ============================================================================
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Client-side validation for forms
+    const forms = document.querySelectorAll('form[data-validate]');
+
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const inputs = form.querySelectorAll('input[required]');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('border-red-500');
+                    isValid = false;
+                } else {
+                    input.classList.remove('border-red-500');
+                }
+
+                // Email validation
+                if (input.type === 'email' && input.value) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(input.value)) {
+                        input.classList.add('border-red-500');
+                        isValid = false;
+                    }
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                showNotification('Пожалуйста, заполните все обязательные поля корректно', 'error');
+            }
+        });
+    });
+});
+
+// ============================================================================
+// MODAL SYSTEM
+// ============================================================================
+
+function createModal(title, content, buttons = []) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    modal.innerHTML = `
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 class="text-lg font-semibold mb-4">${title}</h3>
+            <div class="mb-6">${content}</div>
+            <div class="flex justify-end space-x-2">
+                ${buttons.map(btn => `<button class="px-4 py-2 ${btn.class || 'bg-gray-500 text-white rounded'}">${btn.text}</button>`).join('')}
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Handle button clicks
+    const btnElements = modal.querySelectorAll('button');
+    buttons.forEach((btn, index) => {
+        btnElements[index].addEventListener('click', () => {
+            if (btn.action) btn.action();
+            modal.remove();
+        });
+    });
+
+    return modal;
+}
+
+// ============================================================================
+// ADD TO CART WITH CONFIRMATION
+// ============================================================================
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('form[action*="/cart/add/"]').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const productName = this.closest('.product-card')?.querySelector('h4 a')?.textContent || 'товар';
+
+            createModal(
+                'Добавить в корзину',
+                `Добавить "${productName}" в корзину?`,
+                [
+                    { text: 'Отмена', class: 'bg-gray-500 hover:bg-gray-600' },
+                    {
+                        text: 'Добавить',
+                        class: 'bg-purple-600 hover:bg-purple-700',
+                        action: () => {
+                            form.submit();
+                        }
+                    }
+                ]
+            );
+        });
+    });
 });

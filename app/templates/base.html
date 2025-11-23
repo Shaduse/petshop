@@ -4,44 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PetShop - Интернет-магазин для питомцев{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              'montserrat': ['Montserrat', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <a href="{{ url_for('main.index') }}" class="logo-link">
-                        <i class="fas fa-paw"></i> PetShop
+    <header class="bg-white shadow-md font-montserrat">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <a href="{{ url_for('main.index') }}" class="text-2xl font-bold text-purple-600 hover:text-purple-700 transition-colors">
+                        <i class="fas fa-paw mr-2"></i> PetShop
                     </a>
                 </div>
-                
-                <nav class="navbar">
-                    <ul class="nav-menu">
-                        <li><a href="{{ url_for('main.index') }}" class="nav-link">Главная</a></li>
-                        <li><a href="{{ url_for('product.list_products') }}" class="nav-link">Товары</a></li>
-                        <li><a href="{{ url_for('main.about') }}" class="nav-link">О нас</a></li>
-                        <li><a href="{{ url_for('main.breed_detect') }}" class="nav-link">Определить породу</a></li>
-                    </ul>
+
+                <nav class="hidden md:flex space-x-8">
+                    <a href="{{ url_for('main.index') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Главная</a>
+                    <a href="{{ url_for('product.list_products') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Товары</a>
+                    <a href="{{ url_for('main.about') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">О нас</a>
+                    <a href="{{ url_for('main.breed_detect') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Определить породу</a>
                 </nav>
-                
-                <div class="header-actions">
+
+                <div class="flex items-center space-x-4">
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('main.view_cart') }}" class="action-btn">
+                        <a href="{{ url_for('main.view_cart') }}" class="text-gray-700 hover:text-purple-600 text-xl transition-colors">
                             <i class="fas fa-shopping-cart"></i>
                         </a>
-                        <a href="{{ url_for('profile.view_profile') }}" class="action-btn">
+                        <a href="{{ url_for('profile.view_profile') }}" class="text-gray-700 hover:text-purple-600 text-xl transition-colors">
                             <i class="fas fa-user"></i>
                         </a>
-                        <a href="{{ url_for('auth.logout') }}" class="action-btn">
+                        <a href="{{ url_for('auth.logout') }}" class="text-gray-700 hover:text-purple-600 text-xl transition-colors">
                             <i class="fas fa-sign-out-alt"></i>
                         </a>
                     {% else %}
-                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Вход</a> 
+                        <a href="{{ url_for('auth.login') }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">Вход</a>
                     {% endif %}
                 </div>
             </div>
@@ -51,11 +60,11 @@
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div class="flash-container">
+            <div class="fixed top-4 right-4 z-50 space-y-2">
                 {% for category, message in messages %}
-                    <div class="flash flash-{{ category }}">
+                    <div class="max-w-sm p-4 rounded-lg shadow-lg {% if category == 'error' %}bg-red-500 text-white{% elif category == 'success' %}bg-green-500 text-white{% elif category == 'warning' %}bg-yellow-500 text-white{% else %}bg-blue-500 text-white{% endif %}">
                         {{ message }}
-                        <button class="flash-close" onclick="this.parentElement.style.display='none';">&times;</button>
+                        <button class="ml-4 font-bold" onclick="this.parentElement.remove();">&times;</button>
                     </div>
                 {% endfor %}
             </div>
@@ -68,32 +77,32 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>О магазине</h4>
-                    <p>PetShop - ваш надежный интернет-магазин товаров для кошек и собак.</p>
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">О магазине</h4>
+                    <p class="text-gray-300">PetShop - ваш надежный интернет-магазин товаров для кошек и собак.</p>
                 </div>
-                
-                <div class="footer-section">
-                    <h4>Ссылки</h4>
-                    <ul>
-                        <li><a href="{{ url_for('main.about') }}">О нас</a></li>
-                        <li><a href="{{ url_for('main.privacy') }}">Политика конфиденциальности</a></li>
-                        <li><a href="{{ url_for('product.list_products') }}">Каталог</a></li>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Ссылки</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{{ url_for('main.about') }}" class="text-gray-300 hover:text-white transition-colors">О нас</a></li>
+                        <li><a href="{{ url_for('main.privacy') }}" class="text-gray-300 hover:text-white transition-colors">Политика конфиденциальности</a></li>
+                        <li><a href="{{ url_for('product.list_products') }}" class="text-gray-300 hover:text-white transition-colors">Каталог</a></li>
                     </ul>
                 </div>
-                
-                <div class="footer-section">
-                    <h4>Контакты</h4>
-                    <p>Email: info@petshop.ru</p>
-                    <p>Телефон: +7 (999) 999-99-99</p>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Контакты</h4>
+                    <p class="text-gray-300">Email: info@petshop.ru</p>
+                    <p class="text-gray-300">Телефон: +7 (999) 999-99-99</p>
                 </div>
             </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2024 PetShop. Все права защищены.</p>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-300">&copy; 2024 PetShop. Все права защищены.</p>
             </div>
         </div>
     </footer>

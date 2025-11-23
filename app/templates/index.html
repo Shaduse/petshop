@@ -3,31 +3,33 @@
 {% block title %}PetShop - Интернет-магазин для кошек и собак{% endblock %}
 
 {% block content %}
-<!-- Hero Section (теперь узкий, как на других страницах) -->
-<section class="hero">
-    <div class="container text-center py-5">
-        <h1>Добро пожаловать в PetShop</h1>
-        <p class="lead">Лучшие товары для кошек и собак по выгодным ценам</p>
-        <a href="{{ url_for('product.list_products') }}" class="btn btn-primary btn-lg">Перейти в каталог</a>
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-5xl font-bold mb-6">Добро пожаловать в PetShop</h1>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">Лучшие товары для кошек и собак по выгодным ценам</p>
+        <a href="{{ url_for('product.list_products') }}" class="bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors">Перейти в каталог</a>
     </div>
 </section>
 
 <!-- Categories Section -->
-<section class="categories-section py-5">
-    <div class="container">
-        <h2 class="text-center mb-4">Популярные категории</h2>
-        <div class="categories-grid">
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Популярные категории</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {% for category in popular_categories|default([]) %}
-            <div class="category-card">
-                <div class="category-image">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <div class="h-48 bg-gray-200 flex items-center justify-center">
                     {% if category.image %}
-                        <img src="{{ category.image }}" alt="{{ category.name }}">
+                        <img src="{{ category.image }}" alt="{{ category.name }}" class="w-full h-full object-cover">
                     {% else %}
-                        <div class="placeholder-image"><i class="fas fa-image"></i></div>
+                        <i class="fas fa-image text-4xl text-gray-400"></i>
                     {% endif %}
                 </div>
-                <h3 class="text-center py-3">{{ category.name }}</h3>
-                <a href="{{ url_for('product.list_products', category_id=category.id) }}" class="btn btn-outline w-100">Просмотреть</a>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-center mb-4 text-gray-800">{{ category.name }}</h3>
+                    <a href="{{ url_for('product.list_products', category_id=category.id) }}" class="block bg-purple-600 text-white text-center py-2 rounded-lg hover:bg-purple-700 transition-colors">Просмотреть</a>
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -35,25 +37,25 @@
 </section>
 
 <!-- Featured Products -->
-<section class="featured-section py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center mb-4">Рекомендуемые товары</h2>
-        <div class="products-grid">
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Рекомендуемые товары</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {% for product in recommended_products|default([]) %}
-            <div class="product-card">
-                <div class="product-image">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <div class="h-48 bg-gray-200 flex items-center justify-center">
                     {% if product.image %}
-                        <img src="{{ product.image }}" alt="{{ product.name }}">
+                        <img src="{{ product.image }}" alt="{{ product.image }}" class="w-full h-full object-cover">
                     {% else %}
-                        <div class="placeholder-image"><i class="fas fa-image"></i></div>
+                        <i class="fas fa-image text-4xl text-gray-400"></i>
                     {% endif %}
                 </div>
-                <div class="product-info">
-                    <h4><a href="{{ url_for('product.view', product_id=product.id) }}">{{ product.name }}</a></h4>
-                    <p class="product-price">₽{{ product.price | int }}</p>
-                    <form action="{{ url_for('main.add_to_cart', product_id=product.id) }}" method="post" class="d-inline">
+                <div class="p-6">
+                    <h4 class="text-lg font-semibold mb-2"><a href="{{ url_for('product.view', product_id=product.id) }}" class="text-gray-800 hover:text-purple-600 transition-colors">{{ product.name }}</a></h4>
+                    <p class="text-purple-600 font-bold text-xl mb-4">{{ product.price | int }} ₽</p>
+                    <form action="{{ url_for('main.add_to_cart', product_id=product.id) }}" method="post">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" class="btn btn-primary w-100">В корзину</button>
+                        <button type="submit" class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors">В корзину</button>
                     </form>
                 </div>
             </div>
@@ -62,23 +64,23 @@
     </div>
 </section>
 
-<!-- Newsletter — показываем только новым пользователям -->
+<!-- Newsletter -->
 {% if not current_user.is_authenticated or not is_subscribed %}
-<section class="py-5">
-    <div class="container">
-        <div class="promo-banner text-center p-4 rounded shadow" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-            <h3>🎉 Подпишитесь на рассылку и получите 30% скидку!</h3>
-            <p class="mb-3">Приветственный промокод WELCOME30 придет сразу после подписки</p>
-            <form action="{{ url_for('main.subscribe') }}" method="post" class="d-flex justify-content-center gap-2 flex-wrap">
+<section class="py-16 bg-gradient-to-r from-purple-600 to-pink-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-lg shadow-xl p-8 text-center">
+            <h3 class="text-3xl font-bold mb-4 text-gray-800">🎉 Подпишитесь на рассылку и получите 30% скидку!</h3>
+            <p class="text-gray-600 mb-6">Приветственный промокод придет сразу после подписки</p>
+            <form action="{{ url_for('main.subscribe') }}" method="post" data-validate class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 {% if current_user.is_authenticated %}
-                    <input type="email" name="email" class="form-control" value="{{ current_user.email }}" readonly style="max-width: 320px;">
+                    <input type="email" name="email" value="{{ current_user.email }}" readonly class="flex-1 max-w-xs px-4 py-3 border border-gray-300 rounded-lg bg-gray-100">
                 {% else %}
-                    <input type="email" name="email" class="form-control" placeholder="Ваш email" required style="max-width: 320px;">
+                    <input type="email" name="email" placeholder="Ваш email" required class="flex-1 max-w-xs px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                 {% endif %}
-                <button type="submit" class="btn btn-light btn-lg px-4">Получить скидку 30%</button>
+                <button type="submit" class="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">Получить скидку 30%</button>
             </form>
-            <p class="mt-2 small">Без подтверждения email • Мгновенная активация</p>
+            <p class="text-sm text-gray-500 mt-4">Без подтверждения email • Мгновенная активация</p>
         </div>
     </div>
 </section>

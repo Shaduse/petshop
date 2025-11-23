@@ -1,0 +1,14 @@
+{
+  "name": "petshop-flask",
+  "version": "1.0.0",
+  "description": "PetShop Flask application with Tailwind CSS",
+  "scripts": {
+    "build-css": "tailwindcss -i ./src/css/main.css -o ./app/static/css/tailwind.css --watch",
+    "prod-css": "tailwindcss -i ./src/css/main.css -o ./app/static/css/tailwind.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0"
+  }
+}
