@@ -48,6 +48,12 @@
         <h1>Войти</h1>
         <input type="text" name="email" placeholder="Email или имя пользователя" required>
         <input type="password" name="password" placeholder="Пароль" required>
+        <div class="remember-me">
+          <label>
+            <input type="checkbox" name="remember" value="1">
+            <span>Запомнить меня</span>
+          </label>
+        </div>
         <a href="{{ url_for('auth.forgot_password') }}">Забыли пароль?</a>
         <button type="submit">Войти</button>
       </form>

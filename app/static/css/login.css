@@ -244,6 +244,28 @@ body {
 }
 
 /* ============================================================================
+   REMEMBER ME CHECKBOX
+   ============================================================================ */
+
+.remember-me {
+    margin: 10px 0;
+    text-align: left;
+}
+
+.remember-me label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.remember-me input {
+    margin: 0;
+    cursor: pointer;
+}
+
+/* ============================================================================
    FLASH MESSAGES
    ============================================================================ */
 

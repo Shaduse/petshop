@@ -160,25 +160,19 @@ def register():
             username=username,
             email=email,
             privacy_accepted=True,
-            privacy_accepted_at=datetime.now(timezone.utc)
+            privacy_accepted_at=datetime.now(timezone.utc),
+            is_verified=True  # Auto-verify for immediate login
         )
         user.set_password(password)
-        
-        # Generate and send verification code
-        verification_code = generate_verification_code()
-        user.verification_token = verification_code
-        user.verification_token_expires = datetime.now(timezone.utc)
-        
+
         db.session.add(user)
         db.session.commit()
-        
-        # Send verification email
-        if send_verification_email(email, verification_code):
-            flash('Регистрация успешна! Код подтверждения отправлен на вашу почту.', 'success')
-        else:
-            flash('Регистрация успешна! Проверьте вашу почту для подтверждения.', 'warning')
-        
-        return redirect(url_for('auth.verify_email', email=email))
+
+        # Auto-login after registration
+        login_user(user)
+        flash('Регистрация успешна! Вы вошли в аккаунт.', 'success')
+
+        return redirect(url_for('main.index'))
     
     return render_template('auth/register.html')
 
