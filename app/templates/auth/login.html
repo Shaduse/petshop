@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PetShop - Вход и Регистрация</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="container" id="container">
+    <!-- Registration Form -->
+    <div class="form-container sign-up">
+      <form action="{{ url_for('auth.register') }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h1>Создать аккаунт</h1>
+        <input type="text" name="username" placeholder="Имя пользователя" required>
+        <input type="email" name="email" placeholder="Электронная почта" required>
+        <input type="password" name="password" placeholder="Пароль" required>
+        <input type="password" name="password_confirm" placeholder="Подтвердите пароль" required>
+        <div class="privacy-checkbox">
+          <label>
+            <input type="checkbox" name="privacy_accepted" value="1" required>
+            <span>Я принимаю <a href="{{ url_for('main.privacy') }}" target="_blank">политику конфиденциальности</a></span>
+          </label>
+        </div>
+        <button type="submit">Зарегистрироваться</button>
+      </form>
+    </div>
+
+    <!-- Login Form -->
+    <div class="form-container sign-in">
+      <form action="{{ url_for('auth.login') }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h1>Войти</h1>
+        <input type="text" name="email" placeholder="Email или имя пользователя" required>
+        <input type="password" name="password" placeholder="Пароль" required>
+        <a href="{{ url_for('auth.forgot_password') }}">Забыли пароль?</a>
+        <button type="submit">Войти</button>
+      </form>
+    </div>
+
+    <!-- Toggle Container -->
+    <div class="toggle-container">
+      <div class="toggle">
+        <div class="toggle-panel toggle-left">
+          <h1>Привет, друг!</h1>
+          <p>Зарегистрируйтесь, указав свои личные данные, чтобы использовать все функции сайта</p>
+          <button class="hidden" id="login">Войти</button>
+        </div>
+        <div class="toggle-panel toggle-right">
+          <h1>С возвращением!</h1>
+          <p>Введите свои личные данные, чтобы использовать все функции сайта</p>
+          <button class="hidden" id="register">Зарегистрироваться</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+</html>

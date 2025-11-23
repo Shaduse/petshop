@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PetShop - Подтверждение почты</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(to right, #512da8, #cec3e7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .verify-container {
+      background: white;
+      border-radius: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+      padding: 60px 40px;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .verify-icon {
+      font-size: 80px;
+      color: #512da8;
+      margin-bottom: 20px;
+    }
+
+    .verify-container h1 {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .verify-container p {
+      font-size: 14px;
+      color: #757575;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .verify-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .verify-form input {
+      padding: 12px 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .verify-form input:focus {
+      outline: none;
+      border-color: #512da8;
+      box-shadow: 0 0 5px rgba(81, 45, 168, 0.3);
+    }
+
+    .verify-form button {
+      padding: 12px 30px;
+      background: #512da8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .verify-form button:hover {
+      background: #5c6bc0;
+      transform: translateY(-2px);
+    }
+
+    .resend-link {
+      margin-top: 20px;
+      font-size: 13px;
+    }
+
+    .resend-link a {
+      color: #512da8;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .resend-link a:hover {
+      color: #ffc107;
+      text-decoration: underline;
+    }
+
+    .back-link {
+      margin-top: 20px;
+    }
+
+    .back-link a {
+      color: #757575;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .back-link a:hover {
+      color: #512da8;
+    }
+  </style>
+</head>
+<body>
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="verify-container">
+    <div class="verify-icon">
+      <i class="fas fa-envelope"></i>
+    </div>
+    <h1>Подтверждение почты</h1>
+    <p>На вашу почту <strong>{{ email }}</strong> отправлен код подтверждения. Пожалуйста, введите его ниже.</p>
+
+    <form class="verify-form" method="post" action="{{ url_for('auth.verify_email') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="email" name="email" value="{{ email }}" hidden>
+      <input type="text" name="code" placeholder="Введите код подтверждения" required maxlength="6">
+      <button type="submit">Подтвердить почту</button>
+    </form>
+
+    <div class="resend-link">
+      Не получили код?
+      <a href="{{ url_for('auth.resend_verification', email=email) }}">Отправить заново</a>
+    </div>
+
+    <div class="back-link">
+      <a href="{{ url_for('main.index') }}">← Вернуться на главную</a>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

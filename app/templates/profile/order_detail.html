@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Заказ №{{ order.order_number }} - Профиль{% endblock %}
+
+{% block content %}
+    {% set status_map = {
+        'pending': 'В ожидании',
+        'shipped': 'Отправлен',
+        'delivered': 'Доставлен',
+        'cancelled': 'Отменен'
+    } %}
+    <section class="profile-page">
+        <div class="container">
+            <div class="profile-layout">
+                <!-- Sidebar (Same as profile/orders.html) -->
+                <aside class="profile-sidebar">
+                    <div class="profile-card">
+                        <h2>{{ current_user.username }}</h2>
+                        <p>{{ current_user.email }}</p>
+                    </div>
+
+                    <nav class="profile-nav">
+                        <ul>
+                            <li><a href="{{ url_for('profile.view_profile') }}" class="{% if request.endpoint == 'profile.view_profile' %}active{% endif %}">Профиль</a></li>
+                            <li><a href="{{ url_for('profile.edit_profile') }}" class="{% if request.endpoint == 'profile.edit_profile' %}active{% endif %}">Редактировать</a></li>
+                            <li><a href="{{ url_for('profile.view_orders') }}" class="active">Заказы</a></li>
+                            <li><a href="{{ url_for('profile.view_favorites') }}" class="{% if request.endpoint == 'profile.view_favorites' %}active{% endif %}">Избранное</a></li>
+                            <li><a href="{{ url_for('profile.manage_addresses') }}" class="{% if request.endpoint == 'profile.manage_addresses' %}active{% endif %}">Адреса</a></li>
+                            <li><a href="{{ url_for('profile.change_password') }}" class="{% if request.endpoint == 'profile.change_password' %}active{% endif %}">Сменить пароль</a></li>
+                            {% if current_user.roles and current_user.roles[0].name in ['Admin', 'Manager'] %}
+                            <li><a href="{{ url_for('admin.admin_dashboard') }}" class="{% if request.blueprint == 'admin' %}active{% endif %}">Панель управления</a></li>
+                            {% endif %}
+                            <li><a href="{{ url_for('auth.logout') }}">Выход</a></li>
+                        </ul>
+                    </nav>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="profile-main">
+                    <h1>Детали заказа №{{ order.order_number }}</h1>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <div class="order-details-grid">
+                        <div class="order-info">
+                            <h2>Информация о заказе</h2>
+                            <p><strong>Дата заказа:</strong> {{ order.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+                            <p><strong>Статус:</strong> <span class="badge badge-info">{{ status_map[order.status.value] }}</span></p>
+                            <p><strong>Сумма:</strong> {{ order.total | round(2) }} ₽</p>
+                            {% if order.notes %}
+                                <p><strong>Комментарий:</strong> {{ order.notes }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="shipping-info">
+                            <h2>Адрес доставки</h2>
+                            <p><strong>Получатель:</strong> {{ order.address.full_name }}</p>
+                            <p><strong>Телефон:</strong> {{ order.address.phone }}</p>
+                            <p><strong>Адрес:</strong> {{ order.address.street }}, {{ order.address.city }}, {{ order.address.postal_code }}, {{ order.address.country }}</p>
+                        </div>
+                    </div>
+
+                    <div class="order-items-section">
+                        <h2>Состав заказа</h2>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Изображение</th>
+                                    <th>Товар</th>
+                                    <th>Цена за ед.</th>
+                                    <th>Количество</th>
+                                    <th>Сумма</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all() %}
+                                    <tr>
+                                        <td>
+                                            {% if item.image %}
+                                                <img src="{{ url_for('static', filename=item.image.replace('/static/', '')) }}" alt="{{ item.product_name }}" class="order-item-thumb">
+                                            {% endif %}
+                                        </td>
+                                        <td><a href="{{ url_for('product.view', product_id=item.product_id) }}">{{ item.product_name }}</a></td>
+                                        <td>{{ item.price | round(2) }} ₽</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>{{ item.subtotal | round(2) }} ₽</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="order-actions mt-4">
+                        <h2>Действия</h2>
+                        {% if order.status.value == 'pending' %}
+                            <form method="POST" action="{{ url_for('profile.cancel_order', order_id=order.id) }}" style="display: inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите отменить заказ?');">Отменить заказ</button>
+                            </form>
+                        {% elif order.status.value == 'delivered' %}
+                            <form method="POST" action="{{ url_for('profile.return_order', order_id=order.id) }}" style="display: inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-warning" onclick="return confirm('Вы уверены, что хотите запросить возврат?');">Запросить возврат</button>
+                            </form>
+                        {% else %}
+                            <p class="text-muted">Действия недоступны для статуса "{{ status_map[order.status.value] }}"</p>
+                        {% endif %}
+                        <a href="{{ url_for('profile.view_orders') }}" class="btn btn-secondary">Назад к заказам</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

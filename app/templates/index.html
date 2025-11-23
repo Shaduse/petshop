@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}PetShop - Интернет-магазин для кошек и собак{% endblock %}
+
+{% block content %}
+<!-- Hero Section (теперь узкий, как на других страницах) -->
+<section class="hero">
+    <div class="container text-center py-5">
+        <h1>Добро пожаловать в PetShop</h1>
+        <p class="lead">Лучшие товары для кошек и собак по выгодным ценам</p>
+        <a href="{{ url_for('product.list_products') }}" class="btn btn-primary btn-lg">Перейти в каталог</a>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="categories-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Популярные категории</h2>
+        <div class="categories-grid">
+            {% for category in popular_categories|default([]) %}
+            <div class="category-card">
+                <div class="category-image">
+                    {% if category.image %}
+                        <img src="{{ category.image }}" alt="{{ category.name }}">
+                    {% else %}
+                        <div class="placeholder-image"><i class="fas fa-image"></i></div>
+                    {% endif %}
+                </div>
+                <h3 class="text-center py-3">{{ category.name }}</h3>
+                <a href="{{ url_for('product.list_products', category_id=category.id) }}" class="btn btn-outline w-100">Просмотреть</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="featured-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Рекомендуемые товары</h2>
+        <div class="products-grid">
+            {% for product in recommended_products|default([]) %}
+            <div class="product-card">
+                <div class="product-image">
+                    {% if product.image %}
+                        <img src="{{ product.image }}" alt="{{ product.name }}">
+                    {% else %}
+                        <div class="placeholder-image"><i class="fas fa-image"></i></div>
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <h4><a href="{{ url_for('product.view', product_id=product.id) }}">{{ product.name }}</a></h4>
+                    <p class="product-price">₽{{ product.price | int }}</p>
+                    <a href="{{ url_for('main.add_to_cart', product_id=product.id) }}" class="btn btn-primary w-100">В корзину</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter — показываем только новым пользователям -->
+{% if not current_user.is_authenticated or not is_subscribed %}
+<section class="py-5">
+    <div class="container">
+        <div class="promo-banner text-center p-4 rounded shadow" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <h3>🎉 Подпишитесь на рассылку и получите 30% скидку!</h3>
+            <p class="mb-3">Приветственный промокод WELCOME30 придет сразу после подписки</p>
+            <form action="{{ url_for('main.subscribe') }}" method="post" class="d-flex justify-content-center gap-2 flex-wrap">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                {% if current_user.is_authenticated %}
+                    <input type="email" name="email" class="form-control" value="{{ current_user.email }}" readonly style="max-width: 320px;">
+                {% else %}
+                    <input type="email" name="email" class="form-control" placeholder="Ваш email" required style="max-width: 320px;">
+                {% endif %}
+                <button type="submit" class="btn btn-light btn-lg px-4">Получить скидку 30%</button>
+            </form>
+            <p class="mt-2 small">Без подтверждения email • Мгновенная активация</p>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

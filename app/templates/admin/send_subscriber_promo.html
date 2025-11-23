@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Рассылка подписчикам{% endblock %}
+
+{% block content %}
+<section class="admin-page">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Рассылка подписчикам</h1>
+        </div>
+
+        {% include "admin/_admin_nav.html" %}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="card">
+            <div class="card-header">
+                Отправить промокод подписчикам рассылки
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('admin.admin_send_subscriber_promo') }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="mb-3">
+                        <label for="promo_code_id" class="form-label">Выберите промокод</label>
+                        <select class="form-select" id="promo_code_id" name="promo_code_id" required>
+                            <option value="">-- Выберите --</option>
+                            {% for code in promo_codes %}
+                                <option value="{{ code.id }}">{{ code.code }} ({{ code.discount_value }}{{ '%' if code.discount_type == 'percent' else ' ₽' }})</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">Будут показаны только активные промокоды.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Тема письма</label>
+                        <input type="text" class="form-control" id="subject" name="subject" required value="Специальное предложение для подписчиков PetShop">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="body_template" class="form-label">Выберите шаблон письма</label>
+                        <select class="form-select" id="body_template" name="body_template" required>
+                            <option value="">-- Выберите шаблон --</option>
+                            <option value="emails/promo_mass.html">Шаблон 1: Стильный промокод (emails/promo_mass.html)</option>
+                            <option value="emails/promo_simple.html">Шаблон 2: Простой текст (emails/promo_simple.html)</option>
+                            <option value="emails/promo_modern.html">Шаблон 3: Современный дизайн (emails/promo_modern.html)</option>
+                            <option value="emails/promo_minimal.html">Шаблон 4: Минималистичный (emails/promo_minimal.html)</option>
+                            <option value="emails/promo_festive.html">Шаблон 5: Праздничный (emails/promo_festive.html)</option>
+                        </select>
+                        <div class="form-text">Выбранный шаблон будет использован для форматирования письма.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success" onclick="return confirm('Вы уверены, что хотите отправить этот промокод всем подтвержденным подписчикам?')">Отправить подписчикам</button>
+                    <a href="{{ url_for('admin.admin_subscribers') }}" class="btn btn-secondary">Назад к подписчикам</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

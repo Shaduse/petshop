@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Адреса - PetShop{% endblock %}
+
+{% block content %}
+    <section class="profile-page">
+        <div class="container">
+            <div class="profile-layout">
+                <!-- Sidebar -->
+                {% include "profile/_profile_sidebar.html" %}
+
+                <!-- Main Content -->
+                <div class="profile-main">
+                    <h1>Мои адреса</h1>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <!-- Add Address Form -->
+                    <div class="card mb-4">
+                        <div class="card-header">Добавить новый адрес</div>
+                        <div class="card-body">
+                            <form action="{{ url_for('profile.manage_addresses') }}" method="post">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <div class="row">
+                                    <div class="col-md-6 form-group">
+                                        <label for="full_name">ФИО:</label>
+                                        <input type="text" id="full_name" name="full_name" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="phone">Телефон:</label>
+                                        <input type="tel" id="phone" name="phone" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="street">Улица и номер дома:</label>
+                                    <input type="text" id="street" name="street" class="form-control" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 form-group">
+                                        <label for="city">Город:</label>
+                                        <input type="text" id="city" name="city" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="postal_code">Почтовый индекс:</label>
+                                        <input type="text" id="postal_code" name="postal_code" class="form-control">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Добавить адрес</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Addresses List -->
+                    {% if addresses %}
+                        <div class="addresses-list">
+                            <h2>Сохраненные адреса</h2>
+                            <div class="row">
+                                {% for address in addresses %}
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ address.full_name }}</h5>
+                                                <p class="card-text mb-1">{{ address.street }}</p>
+                                                <p class="card-text mb-1">{{ address.postal_code }}, {{ address.city }}, {{ address.country }}</p>
+                                                <p class="card-text mb-3">Тел: {{ address.phone }}</p>
+                                                <div class="address-actions">
+                                                    <a href="{{ url_for('profile.edit_address', address_id=address.id) }}" class="btn btn-outline-secondary btn-sm">Редактировать</a>
+                                                    <form action="{{ url_for('profile.delete_address', address_id=address.id) }}" method="post" style="display: inline;" onsubmit="return confirm('Вы уверены, что хотите удалить этот адрес?');">
+                                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                        <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Корзина - PetShop{% endblock %}
+
+{% block content %}
+    <section class="cart-page">
+        <div class="container">
+            <h1>Корзина покупок</h1>
+
+            {% if cart_items %}
+                <div class="cart-layout">
+                    <div class="cart-items">
+                        {% for item in cart_items %}
+                            <div class="cart-item">
+                                <div class="item-image">
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image }}" alt="{{ item.product.name }}">
+                                    {% else %}
+                                        <div class="placeholder-image">
+                                            <i class="fas fa-image"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="item-info">
+                                    <h3>{{ item.product.name }}</h3>
+                                    <p class="item-category">{{ item.product.category.name }}</p>
+                                    <p class="item-price">{{ item.product.price }} ₽</p>
+                                </div>
+
+                                <div class="item-quantity">
+                                    <form action="{{ url_for('main.update_cart_item', cart_item_id=item.id) }}" method="post" class="quantity-form">
+                                        <label for="quantity-{{ item.id }}">Количество:</label>
+                                        <div class="quantity-control">
+                                            <button type="button" class="btn-minus" data-cart-item-id="{{ item.id }}">-</button>
+                                            <input type="number" id="quantity-{{ item.id }}" name="quantity" value="{{ item.quantity }}" min="1" class="quantity-input" data-initial-value="{{ item.quantity }}" data-cart-item-id="{{ item.id }}">
+                                            <button type="button" class="btn-plus" data-cart-item-id="{{ item.id }}">+</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="item-total">
+                                    <p id="item-total-{{ item.id }}">{{ (item.product.price * item.quantity)|int }} ₽</p>
+                                </div>
+
+                                <form action="{{ url_for('main.remove_from_cart', cart_item_id=item.id) }}" method="post" class="remove-form">
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Удалить">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="cart-summary">
+                        <h2>Итого</h2>
+                        <div class="summary-row">
+                            <span>Сумма товаров:</span>
+                            <span id="subtotal-amount">{{ total|int }} ₽</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Доставка:</span>
+                            <span>Рассчитается при оформлении</span>
+                        </div>
+                        <div class="summary-total">
+                            <span>Итого:</span>
+                            <span id="total-amount">{{ total|int }} ₽</span>
+                        </div>
+                        <div class="promo-code-section mb-3">
+                            <form action="{{ url_for('main.apply_promo_code') }}" method="post">
+                                <div class="input-group">
+                                    <input type="text" name="promo_code" class="form-control" placeholder="Промокод" required>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="submit">Применить</button>
+                                    </div>
+                                </div>
+                            </form>
+                            {% if session.get('promo_code') %}
+                                <p class="text-success mt-2">Применен промокод: <strong>{{ session.get('promo_code') }}</strong></p>
+                            {% endif %}
+                        </div>
+                        <a href="{{ url_for('main.checkout') }}" class="btn btn-primary btn-lg">Оформить заказ</a>
+                        <a href="{{ url_for('product.list_products') }}" class="btn btn-outline btn-lg">Продолжить покупки</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h2>Корзина пуста</h2>
+                    <p>Добавьте товары в корзину</p>
+                    <a href="{{ url_for('product.list_products') }}" class="btn btn-primary">Перейти в каталог</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
+
+

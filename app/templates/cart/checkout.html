@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Оформление заказа - PetShop{% endblock %}
+
+{% block content %}
+<section class="cart-page">
+    <div class="container">
+        <h1>Оформление заказа</h1>
+
+        <form method="POST" action="{{ url_for('main.checkout') }}" class="checkout-form">
+            {{ csrf_token() }}
+
+            <div class="cart-layout">
+                <!-- Левая колонка: Адрес и комментарий -->
+                <div class="cart-items" style="flex: 1;">
+                    <div class="cart-item" style="padding: 1.5rem; background: #fff;">
+                        <h3><i class="fas fa-map-marker-alt"></i> Адрес доставки</h3>
+
+                        {% if addresses %}
+                            <div class="address-list mt-4">
+                                {% for address in addresses %}
+                                    <label class="address-card mb-3 d-block p-3 border rounded hover-shadow" style="cursor: pointer;">
+                                        <input type="radio" name="address_id" value="{{ address.id }}"
+                                               {% if address.is_default %}checked{% endif %} required
+                                               style="margin-right: 12px;">
+                                        <div class="d-inline-block">
+                                            <strong>{{ address.full_name }}</strong>
+                                            {% if address.is_default %}
+                                                <span class="badge badge-primary ml-2">По умолчанию</span>
+                                            {% endif %}
+                                            <div class="text-muted small">
+                                                {{ address.street }}, {{ address.city }}, {{ address.postal_code }}
+                                                <br>Телефон: {{ address.phone }}
+                                            </div>
+                                        </div>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-warning">
+                                У вас нет сохранённых адресов. 
+                                <a href="{{ url_for('profile.manage_addresses') }}">Добавить адрес →</a>
+                            </div>
+                        {% endif %}
+
+                        <div class="form-group mt-4">
+                            <label for="notes"><i class="fas fa-comment-dots"></i> Комментарий к заказу (необязательно)</label>
+                            <textarea id="notes" name="notes" rows="4" class="form-control" 
+                                      placeholder="Например: оставить у двери, позвонить за 30 минут"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Правая колонка: Итоговая сводка -->
+                <div class="cart-summary">
+                    <h2><i class="fas fa-receipt"></i> Ваш заказ</h2>
+
+                    <div class="order-items-list mt-4">
+                        {% for item in cart_items %}
+                            <div class="order-item d-flex justify-content-between py-2 border-bottom">
+                                <div>
+                                    <strong>{{ item.product.name }}</strong><br>
+                                    <small class="text-muted">{{ item.quantity }} × {{ item.product.price|int }} ₽</small>
+                                </div>
+                                <strong>{{ (item.quantity * item.product.price)|int }} ₽</strong>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="order-totals mt-4">
+                        <div class="summary-row">
+                            <span>Сумма товаров:</span>
+                            <strong>{{ subtotal|int }} ₽</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Доставка:</span>
+                            <strong>{{ shipping_cost|int }} ₽</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Налог (5%):</span>
+                            <strong>{{ tax|int }} ₽</strong>
+                        </div>
+                        {% if session.get('promo_code') %}
+                        <div class="summary-row text-danger">
+                            <span>Скидка ({{ session.get('promo_code') }}):</span>
+                            <strong>-{{ session.get('discount_amount')|int }} ₽</strong>
+                        </div>
+                        {% endif %}
+                        <div class="summary-total">
+                            <span>Итого к оплате:</span>
+                            <strong class="text-primary Rfs">{{ total|int }} ₽</strong>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg btn-block mt-4" 
+                            {% if not addresses %}disabled{% endif %}>
+                        <i class="fas fa-check"></i> Подтвердить заказ
+                    </button>
+
+                    <a href="{{ url_for('main.view_cart') }}" class="btn btn-outline btn-block mt-2">
+                        ← Вернуться в корзину
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

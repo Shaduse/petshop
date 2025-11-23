@@ -1,0 +1,50 @@
+{% extends "email/base.html" %}
+
+{% block email_content %}
+    <h2 style="color: #333333;">Заказ №{{ order.order_number }} успешно оформлен!</h2>
+    <p>Спасибо за ваш заказ в PetShop. Мы немедленно приступим к его обработке.</p>
+    
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <tr>
+            <td style="padding: 8px; border: 1px solid #dddddd;"><strong>Дата заказа:</strong></td>
+            <td style="padding: 8px; border: 1px solid #dddddd;">{{ order.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #dddddd;"><strong>Общая сумма:</strong></td>
+            <td style="padding: 8px; border: 1px solid #dddddd;">{{ order.total | round(2) }} ₽</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #dddddd;"><strong>Статус:</strong></td>
+            <td style="padding: 8px; border: 1px solid #dddddd;">{{ order.status.value.capitalize() }}</td>
+        </tr>
+    </table>
+
+    <h3 style="margin-top: 30px;">Состав заказа:</h3>
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th style="padding: 8px; border: 1px solid #dddddd; text-align: left;">Товар</th>
+                <th style="padding: 8px; border: 1px solid #dddddd; text-align: right;">Цена</th>
+                <th style="padding: 8px; border: 1px solid #dddddd; text-align: right;">Кол-во</th>
+                <th style="padding: 8px; border: 1px solid #dddddd; text-align: right;">Сумма</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items %}
+            <tr>
+                <td style="padding: 8px; border: 1px solid #dddddd;">{{ item.product.name }}</td>
+                <td style="padding: 8px; border: 1px solid #dddddd; text-align: right;">{{ item.price | round(2) }} ₽</td>
+                <td style="padding: 8px; border: 1px solid #dddddd; text-align: right;">{{ item.quantity }}</td>
+                <td style="padding: 8px; border: 1px solid #dddddd; text-align: right;">{{ (item.price * item.quantity) | round(2) }} ₽</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p style="margin-top: 30px;">Мы свяжемся с вами, как только статус заказа изменится.</p>
+    <p style="text-align: center; margin-top: 40px;">
+        <a href="{{ url_for('profile.view_orders', _external=True) }}" style="background-color: #512da8; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+            Посмотреть мои заказы
+        </a>
+    </p>
+{% endblock %}

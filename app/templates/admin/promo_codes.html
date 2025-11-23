@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Управление промокодами{% endblock %}
+
+{% block content %}
+<section class="admin-page">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Управление промокодами</h1>
+        </div>
+
+        {% include "admin/_admin_nav.html" %}
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a href="{{ url_for('admin.add_promo_code') }}" class="btn btn-primary">Добавить промокод</a>
+            <a href="{{ url_for('admin.admin_send_promo_emails') }}" class="btn btn-info">Массовая рассылка</a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Код</th>
+                                <th>Тип</th>
+                                <th>Значение</th>
+                                <th>Активен</th>
+                                <th>Действует с</th>
+                                <th>Действует до</th>
+                                <th>Макс. исп.</th>
+                                <th>Использовано</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for code in promo_codes %}
+                            <tr>
+                                <td>{{ code.id }}</td>
+                                <td><strong>{{ code.code }}</strong></td>
+                                <td>{{ 'Процент' if code.discount_type == 'percent' else 'Фиксированная' }}</td>
+                                <td>{{ code.discount_value }}{{ '%' if code.discount_type == 'percent' else ' ₽' }}</td>
+                                <td>
+                                    <span class="badge {{ 'bg-success' if code.is_active else 'bg-danger' }}">
+                                        {{ 'Да' if code.is_active else 'Нет' }}
+                                    </span>
+                                </td>
+                                <td>{{ code.valid_from.strftime('%d.%m.%Y') if code.valid_from else '—' }}</td>
+                                <td>{{ code.valid_until.strftime('%d.%m.%Y') if code.valid_until else '—' }}</td>
+                                <td>{{ '∞' if code.max_uses == -1 else code.max_uses }}</td>
+                                <td>{{ code.current_uses }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.edit_promo_code', promo_code_id=code.id) }}" class="btn btn-sm btn-warning">Редактировать</a>
+                                    <form action="{{ url_for('admin.delete_promo_code', promo_code_id=code.id) }}" method="post" style="display:inline;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Удалить промокод {{ code.code }}?')">Удалить</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Админ-панель - PetShop{% endblock %}
+
+{% block content %}
+    <section class="admin-page">
+        <div class="container">
+            <h1>Админ-панель</h1>
+
+{% include "admin/_admin_nav.html" %}
+
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <h3>Всего пользователей</h3>
+                    <p class="stat-value">{{ total_users }}</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Всего товаров</h3>
+                    <p class="stat-value">{{ total_products }}</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Всего заказов</h3>
+                    <p class="stat-value">{{ total_orders }}</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Общая выручка</h3>
+                    <p class="stat-value">{{ total_revenue|int }} ₽</p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

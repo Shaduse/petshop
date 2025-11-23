@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}{{ form_title }} - Админ-панель{% endblock %}
+
+{% block content %}
+<section class="admin-page">
+    <div class="container">
+        <h1>{{ form_title }}</h1>
+        {% include "admin/_admin_nav.html" %}
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-plus-circle mr-1"></i>
+                Форма категории
+            </div>
+            <div class="card-body">
+                <form action="{{ form_action }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="name">Название категории</label>
+<input type="text" class="form-control" id="name" name="name" value="{{ category.name if category else '' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Изображение категории</label>
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        {% if category and category.image %}
+                            <div class="mt-2">
+                                <img src="{{ category.image }}" alt="{{ category.name }}" style="max-width: 150px; height: auto;">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" name="delete_image" id="delete_image">
+                                    <label class="form-check-label" for="delete_image">
+                                        Удалить текущее изображение
+                                    </label>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a href="{{ url_for('admin.admin_categories') }}" class="btn btn-secondary">Отмена</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

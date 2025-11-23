@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Мои заказы - PetShop{% endblock %}
+
+{% block content %}
+    {% set status_map = {
+        'pending': 'В ожидании',
+        'shipped': 'Отправлен',
+        'delivered': 'Доставлен',
+        'cancelled': 'Отменен'
+    } %}
+    <section class="profile-page">
+        <div class="container">
+            <div class="profile-layout">
+                <!-- Sidebar -->
+                <aside class="profile-sidebar">
+                    <div class="profile-card">
+                        <h2>{{ current_user.username }}</h2>
+                        <p>{{ current_user.email }}</p>
+                    </div>
+
+                    <nav class="profile-nav">
+                        <ul>
+                            <li><a href="{{ url_for('profile.view_profile') }}" class="{% if request.endpoint == 'profile.view_profile' %}active{% endif %}">Профиль</a></li>
+                            <li><a href="{{ url_for('profile.edit_profile') }}" class="{% if request.endpoint == 'profile.edit_profile' %}active{% endif %}">Редактировать</a></li>
+                            <li><a href="{{ url_for('profile.view_orders') }}" class="{% if request.endpoint == 'profile.view_orders' %}active{% endif %}">Заказы</a></li>
+                            <li><a href="{{ url_for('profile.view_favorites') }}" class="{% if request.endpoint == 'profile.view_favorites' %}active{% endif %}">Избранное</a></li>
+                            <li><a href="{{ url_for('profile.manage_addresses') }}" class="{% if request.endpoint == 'profile.manage_addresses' %}active{% endif %}">Адреса</a></li>
+                            <li><a href="{{ url_for('profile.change_password') }}" class="{% if request.endpoint == 'profile.change_password' %}active{% endif %}">Сменить пароль</a></li>
+                            {% if current_user.roles and current_user.roles[0].name in ['Admin', 'Manager'] %}
+                            <li><a href="{{ url_for('admin.admin_dashboard') }}" class="{% if request.blueprint == 'admin' %}active{% endif %}">Панель управления</a></li>
+                            {% endif %}
+                            <li><a href="{{ url_for('auth.logout') }}">Выход</a></li>
+                        </ul>
+                    </nav>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="profile-main">
+                    <h1>Мои заказы</h1>
+
+                    {% if orders %}
+                        <div class="orders-list">
+                            {% for order in orders %}
+                                <div class="order-card">
+                                    <div class="order-header">
+                                        <h3>Заказ #{{ order.id }}</h3>
+                                        <span class="order-status status-{{ order.status.value }}">{{ status_map[order.status.value] }}</span>
+                                    </div>
+
+                                    <div class="order-details">
+                                        <div class="order-items-preview">
+                                            {% for item in order.items.all() %}
+                                                {% if item.image %}
+                                                    <img src="{{ url_for('static', filename=item.image.replace('/static/', '')) }}" alt="{{ item.product_name }}" class="order-item-thumb">
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <div class="detail-row">
+                                            <label>Дата:</label>
+                                            <span>{{ order.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <label>Товары:</label>
+                                            <span>{{ order.items.all()|length }} шт.</span>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <label>Сумма:</label>
+                                            <span>{{ order.total|int }} ₽</span>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <label>Адрес доставки:</label>
+                                            <span>{{ order.address.street }}, {{ order.address.city }}</span>
+                                        </div>
+                                    </div>
+
+                                    <a href="{{ url_for('profile.view_order_detail', order_id=order.id) }}" class="btn btn-outline btn-sm">Подробнее</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <h2>Нет заказов</h2>
+                            <p>Вы еще не делали заказов</p>
+                            <a href="{{ url_for('product.list_products') }}" class="btn btn-primary">Начать покупки</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

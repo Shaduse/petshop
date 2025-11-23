@@ -1,0 +1,35 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px;">
+    <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+        <h1 style="color: #333; text-align: center; margin-bottom: 10px; font-size: 28px;">🎉 Специальное предложение!</h1>
+
+        <p style="color: #666; text-align: center; font-size: 16px; margin-bottom: 30px;">
+            Уважаемый клиент, у нас есть для вас эксклюзивная скидка!
+        </p>
+
+        <div style="text-align: center; margin: 30px 0; padding: 20px; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); border-radius: 10px; border: 3px dashed #667eea;">
+            <h2 style="color: #333; margin-bottom: 10px; font-size: 24px;">Ваш промокод:</h2>
+            <div style="font-size: 36px; font-weight: bold; color: #667eea; letter-spacing: 4px; margin: 10px 0;">{{ promo_code.code }}</div>
+            <p style="color: #666; font-size: 18px; margin: 10px 0;">
+                Скидка: <strong>{{ promo_code.discount_value | int }}{% if promo_code.discount_type == 'percent' %}%{% else %} ₽{% endif %}</strong>
+            </p>
+            {% if promo_code.valid_until %}
+            <p style="color: #999; font-size: 14px;">Действует до: {{ promo_code.valid_until.strftime('%d.%m.%Y') }}</p>
+            {% endif %}
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ url_for('main.index', _external=True) }}" style="display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+                🛍️ Начать покупки
+            </a>
+        </div>
+
+        <p style="color: #666; text-align: center; font-size: 14px; margin-top: 30px;">
+            Не упустите возможность сэкономить!<br>
+            С любовью, команда PetShop ❤️
+        </p>
+    </div>
+</div>
+{% endblock %}

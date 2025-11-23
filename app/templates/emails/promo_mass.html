@@ -1,0 +1,38 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+    <h2 style="color: #333333;">Специальное предложение от PetShop!</h2>
+    
+    <p>Здравствуйте!</p>
+    
+    <p>Мы рады предложить вам эксклюзивный промокод на скидку:</p>
+    
+    <div style="text-align: center; margin: 20px 0; padding: 15px; background-color: #f0f8ff; border: 2px dashed #512da8; border-radius: 5px;">
+        <p style="font-size: 18px; margin-bottom: 5px;">Ваш промокод:</p>
+        <h1 style="color: #512da8; font-size: 36px; letter-spacing: 3px; margin-top: 0;">{{ promo_code.code }}</h1>
+        <p style="font-size: 16px;">
+            Скидка: 
+            <strong>
+                {{ promo_code.discount_value | int }}
+                {% if promo_code.discount_type == 'percent' %}
+                    %
+                {% else %}
+                    ₽
+                {% endif %}
+            </strong>
+            {% if promo_code.valid_until %}
+                <br>Действует до: {{ promo_code.valid_until.strftime('%d.%m.%Y') }}
+            {% endif %}
+        </p>
+    </div>
+    
+    <p>Используйте его при оформлении заказа, чтобы получить скидку!</p>
+    
+    <p>
+        <a href="{{ url_for('main.index', _external=True) }}" style="display: inline-block; padding: 10px 20px; background-color: #512da8; color: #ffffff; text-decoration: none; border-radius: 5px;">
+            Перейти в магазин
+        </a>
+    </p>
+    
+    <p>С наилучшими пожеланиями,<br>Команда PetShop</p>
+{% endblock %}

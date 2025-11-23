@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Управление заказами - Admin{% endblock %}
+
+{% block content %}
+    {% set status_map = {
+        'pending': {'text': 'В ожидании', 'class': 'badge-warning'},
+        'confirmed': {'text': 'Подтвержден', 'class': 'badge-primary'},
+        'shipped': {'text': 'Отправлен', 'class': 'badge-info'},
+        'delivered': {'text': 'Доставлен', 'class': 'badge-success'},
+        'cancelled': {'text': 'Отменен', 'class': 'badge-danger'}
+    } %}
+<section class="admin-page">
+    <div class="container">
+        <h1>Управление заказами</h1>
+        {% include "admin/_admin_nav.html" %}
+        <form method="get">
+            <div class="row">
+                <div class="col-md-5">
+                    <input type="text" name="search" class="form-control" placeholder="Поиск по номеру заказа, имени или email пользователя..." value="{{ search_term or '' }}">
+                </div>
+                <div class="col-md-4">
+                    <select name="status" class="form-control">
+                        <option value="">Все статусы</option>
+                        {% for status_value in statuses %}
+                            <option value="{{ status_value }}" {% if selected_status == status_value %}selected{% endif %}>{{ status_map[status_value].text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-info w-100">Применить фильтры</button>
+                </div>
+            </div>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID Заказа</th>
+                    <th>Пользователь</th>
+                    <th>Дата</th>
+                    <th>Сумма</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ order.order_number }}</td>
+                        <td>{{ order.user.username }} ({{ order.user.email }})</td>
+                        <td>{{ order.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                        <td>{{ order.total | round(2) }} ₽</td>
+                        <td><span class="badge {{ status_map[order.status.value].class }}">{{ status_map[order.status.value].text }}</span></td>
+                        <td>
+                            <a href="{{ url_for('admin.admin_order_detail', order_id=order.id) }}" class="btn btn-sm btn-primary">Детали</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">Заказов пока нет.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

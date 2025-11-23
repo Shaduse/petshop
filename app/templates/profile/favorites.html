@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Избранное - PetShop{% endblock %}
+
+{% block content %}
+    <section class="profile-page">
+        <div class="container">
+            <div class="profile-layout">
+                <!-- Sidebar -->
+                <aside class="profile-sidebar">
+                    <div class="profile-card">
+                        <h2>{{ current_user.username }}</h2>
+                        <p>{{ current_user.email }}</p>
+                    </div>
+
+                    <nav class="profile-nav">
+                        <ul>
+                            <li><a href="{{ url_for('profile.view_profile') }}" class="{% if request.endpoint == 'profile.view_profile' %}active{% endif %}">Профиль</a></li>
+                            <li><a href="{{ url_for('profile.edit_profile') }}" class="{% if request.endpoint == 'profile.edit_profile' %}active{% endif %}">Редактировать</a></li>
+                            <li><a href="{{ url_for('profile.view_orders') }}" class="{% if request.endpoint == 'profile.view_orders' %}active{% endif %}">Заказы</a></li>
+                            <li><a href="{{ url_for('profile.view_favorites') }}" class="{% if request.endpoint == 'profile.view_favorites' %}active{% endif %}">Избранное</a></li>
+                            <li><a href="{{ url_for('profile.manage_addresses') }}" class="{% if request.endpoint == 'profile.manage_addresses' %}active{% endif %}">Адреса</a></li>
+                            <li><a href="{{ url_for('profile.change_password') }}" class="{% if request.endpoint == 'profile.change_password' %}active{% endif %}">Сменить пароль</a></li>
+                            {% if current_user.roles and current_user.roles[0].name in ['Admin', 'Manager'] %}
+                            <li><a href="{{ url_for('admin.admin_dashboard') }}" class="{% if request.blueprint == 'admin' %}active{% endif %}">Панель управления</a></li>
+                            {% endif %}
+                            <li><a href="{{ url_for('auth.logout') }}">Выход</a></li>
+                        </ul>
+                    </nav>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="profile-main">
+                    <h1>Мое избранное</h1>
+
+                    {% if products %}
+                        <div class="products-grid">
+                            {% for product in products %}
+                                <div class="product-card">
+                                    {% if product.badge %}
+                                        <div class="product-badge">{{ product.badge }}</div>
+                                    {% endif %}
+                                    
+                                    <div class="product-image">
+                                        {% if product.image %}
+                                            <img src="{{ product.image }}" alt="{{ product.name }}">
+                                        {% else %}
+                                            <div class="placeholder-image">
+                                                <i class="fas fa-image"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="product-info">
+                                        <h3>{{ product.name }}</h3>
+                                        <p class="product-category">{{ product.category.name }}</p>
+                                        
+                                        <div class="product-price">
+                                            {% if product.old_price %}
+                                                <span class="old-price">{{ product.old_price }} ₽</span>
+                                            {% endif %}
+                                            <span class="price">{{ product.price }} ₽</span>
+                                        </div>
+                                        
+                                        <div class="product-actions">
+                                            <form action="{{ url_for('main.add_to_cart', product_id=product.id) }}" method="post" style="display: inline;">
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-shopping-cart"></i> В корзину
+                                                </button>
+                                            </form>
+                                            <form action="{{ url_for('main.remove_from_favorites', product_id=product.id) }}" method="post" style="display: inline;">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-heart"></i>
+                            <h2>Избранное пусто</h2>
+                            <p>Добавьте товары в избранное</p>
+                            <a href="{{ url_for('product.list_products') }}" class="btn btn-primary">Перейти в каталог</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

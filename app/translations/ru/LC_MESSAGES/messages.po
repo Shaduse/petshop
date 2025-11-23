@@ -1,0 +1,37 @@
+# Russian translations for PetShop.
+# Copyright (C) 2025
+# This file is distributed under the same license as the PetShop package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PetShop\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-23 16:40:00+05:00\n"
+"PO-Revision-Date: 2025-11-23 16:40\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+
+#: app/templates/admin/role_form.html:9
+msgid "Role Name"
+msgstr "Название роли"
+
+#: app/templates/admin/role_form.html:13
+msgid "Description"
+msgstr "Описание"
+
+#: app/templates/admin/role_form.html:17
+msgid "Permissions"
+msgstr "Разрешения"
+
+#: app/templates/admin/role_form.html:54
+msgid "Save"
+msgstr "Сохранить"
+
+#: app/templates/admin/role_form.html:55
+msgid "Cancel"
+msgstr "Отмена"

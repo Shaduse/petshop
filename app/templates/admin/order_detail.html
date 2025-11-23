@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Заказ №{{ order.order_number }} - Admin{% endblock %}
+
+{% block content %}
+    {% set status_map = {
+        'pending': {'text': 'В ожидании', 'class': 'badge-warning'},
+        'confirmed': {'text': 'Подтвержден', 'class': 'badge-primary'},
+        'shipped': {'text': 'Отправлен', 'class': 'badge-info'},
+        'delivered': {'text': 'Доставлен', 'class': 'badge-success'},
+        'cancelled': {'text': 'Отменен', 'class': 'badge-danger'}
+    } %}
+<section class="admin-page">
+    <div class="container">
+        <h1>Заказ №{{ order.order_number }}</h1>
+        {% include "admin/_admin_nav.html" %}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">Информация о заказе</div>
+                    <div class="card-body">
+                        <p><strong>Дата заказа:</strong> {{ order.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+                        <p><strong>Пользователь:</strong> <a href="{{ url_for('admin.edit_user', user_id=order.user.id) }}">{{ order.user.username }}</a> ({{ order.user.email }})</p>
+                        <p><strong>Статус:</strong> <span class="badge {{ status_map[order.status.value].class }}">{{ status_map[order.status.value].text }}</span></p>
+                        <p><strong>Сумма:</strong> <span class="text-primary font-weight-bold">{{ order.total | round(2) }} ₽</span></p>
+                        {% if order.notes %}
+                            <p><strong>Комментарий:</strong> {{ order.notes }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">Адрес доставки</div>
+                    <div class="card-body">
+                        <p><strong>Получатель:</strong> {{ order.address.full_name }}</p>
+                        <p><strong>Телефон:</strong> {{ order.address.phone }}</p>
+                        <p><strong>Адрес:</strong> {{ order.address.street }}, {{ order.address.city }}, {{ order.address.postal_code }}, {{ order.address.country }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Состав заказа</div>
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Товар</th>
+                            <th>Цена за ед.</th>
+                            <th>Количество</th>
+                            <th>Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all() %}
+                            <tr>
+                                <td><a href="{{ url_for('product.view', product_id=item.product_id) }}">{{ item.product_name }}</a></td>
+                                <td>{{ item.price | round(2) }} ₽</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ (item.price * item.quantity) | round(2) }} ₽</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card order-status-update">
+            <div class="card-header">Изменить статус</div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.admin_order_detail', order_id=order.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-group">
+                        <label for="status">Новый статус:</label>
+                        <select name="status" id="status" class="form-control">
+                            {% for status in OrderStatus %}
+                                <option value="{{ status.value }}" {% if order.status.value == status.value %}selected{% endif %}>
+                                    {{ status_map[status.value].text }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Обновить статус</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

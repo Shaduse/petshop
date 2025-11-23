@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}{{ form_title }}{% endblock %}
+
+{% block content %}
+<section class="admin-page">
+    <div class="container">
+        <h1>{{ form_title }}</h1>
+        {% include "admin/_admin_nav.html" %}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="card">
+            <div class="card-body">
+                <form action="{{ form_action }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="form-group">
+                        <label for="code">Код промокода</label>
+                        <input type="text" class="form-control" id="code" name="code" value="{{ promo_code.code if promo_code else '' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="discount_type">Тип скидки</label>
+                        <select class="form-control" id="discount_type" name="discount_type" required>
+                            <option value="percent" {% if promo_code and promo_code.discount_type == 'percent' %}selected{% endif %}>Процент (%)</option>
+                            <option value="fixed" {% if promo_code and promo_code.discount_type == 'fixed' %}selected{% endif %}>Фиксированная сумма (₽)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="discount_value">Значение скидки</label>
+                        <input type="number" step="0.01" class="form-control" id="discount_value" name="discount_value" value="{{ promo_code.discount_value if promo_code else '' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="max_uses">Максимальное количество использований (-1 = безлимит)</label>
+                        <input type="number" class="form-control" id="max_uses" name="max_uses" value="{{ promo_code.max_uses if promo_code else -1 }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="valid_from">Действует с</label>
+                        <input type="date" class="form-control" id="valid_from" name="valid_from" value="{{ promo_code.valid_from.strftime('%Y-%m-%d') if promo_code and promo_code.valid_from else '' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="valid_until">Действует до</label>
+                        <input type="date" class="form-control" id="valid_until" name="valid_until" value="{{ promo_code.valid_until.strftime('%Y-%m-%d') if promo_code and promo_code.valid_until else '' }}">
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if promo_code is none or promo_code.is_active %}checked{% endif %}>
+                        <label class="form-check-label" for="is_active">Активен</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a href="{{ url_for('admin.admin_promo_codes') }}" class="btn btn-secondary">Отмена</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - PetShop{% endblock %}
+
+{% block content %}
+<section class="breed-detect-page">
+    <div class="container">
+        <h1>Определение породы питомца</h1>
+        <p class="lead">Загрузите фотографию вашей кошки или собаки, и наш ИИ определит породу и предложит лучшие товары!</p>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div id="drop-area" class="drop-area">
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+                    <p>Перетащите фото сюда или <button type="button" id="fileSelectBtn" class="btn btn-link p-0">выберите файл</button></p>
+                    <p class="small text-muted">Поддерживаются форматы JPG, PNG. Макс. размер 5МБ.</p>
+                </div>
+                <div id="image-preview-container" class="image-preview-container" style="display: none;">
+                    <img id="image-preview" src="#" alt="Предварительный просмотр" class="img-fluid rounded">
+                    <button type="button" id="removeImageBtn" class="btn btn-danger btn-sm mt-2">Удалить фото</button>
+                </div>
+                <button type="button" id="analyzeBtn" class="btn btn-primary btn-lg mt-3 w-100" disabled>
+                    <i class="fas fa-paw"></i> Определить породу
+                </button>
+            </div>
+
+            <div class="col-md-6">
+                <div id="loading-spinner" class="loading-spinner" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Загрузка...</span>
+                    </div>
+                    <p class="mt-2">Анализируем фото, это займет несколько секунд...</p>
+                </div>
+
+                <div id="results-container" class="results-container" style="display: none;">
+                    <h2>Результат анализа</h2>
+                    <div class="result-card p-3 rounded shadow-sm">
+                        <h3 id="breed-name" class="text-primary"></h3>
+                        <p class="text-muted">Уверенность: <span id="confidence-score"></span></p>
+                        <p id="breed-description"></p>
+                    </div>
+
+                    <div id="recommendations-block" style="display: none;">
+                        <h2 class="mt-4">Рекомендуем для <span id="recommended-breed-name"></span></h2>
+                        <div id="recommendations-list" class="row">
+                            <!-- Карточки товаров будут добавлены сюда через JS -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="error-message" class="alert alert-danger mt-3" style="display: none;">
+                    <!-- Сообщения об ошибках будут здесь -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .breed-detect-page {
+        padding: 40px 0;
+    }
+    .drop-area {
+        border: 2px dashed #ccc;
+        border-radius: 10px;
+        padding: 50px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.3s;
+    }
+    .drop-area:hover {
+        border-color: #007bff;
+    }
+    .drop-area.highlight {
+        border-color: #28a745;
+        background-color: #f8f9fa;
+    }
+    .image-preview-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .image-preview-container img {
+        max-height: 300px;
+        width: auto;
+        object-fit: cover;
+    }
+    .loading-spinner {
+        text-align: center;
+        padding: 50px 0;
+    }
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
+    .result-card {
+        border: 1px solid #eee;
+    }
+    /* Адаптивность */
+    @media (max-width: 767.98px) {
+        .col-md-6:last-child {
+            margin-top: 30px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}{% endblock %}

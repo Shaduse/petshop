@@ -1,0 +1,14 @@
+<div class="admin-nav mb-4">
+    <a href="{{ url_for('admin.admin_dashboard') }}" class="btn {% if request.endpoint == 'admin.admin_dashboard' %}btn-primary{% else %}btn-outline-primary{% endif %}">Главная</a>
+    <a href="{{ url_for('admin.admin_orders') }}" class="btn {% if request.endpoint == 'admin.admin_orders' or request.endpoint == 'admin.admin_order_detail' %}btn-primary{% else %}btn-outline-primary{% endif %}">Заказы</a>
+    <a href="{{ url_for('admin.manage_products') }}" class="btn {% if request.endpoint.startswith('admin.manage_product') or request.endpoint.startswith('admin.add_product') or request.endpoint.startswith('admin.edit_product') %}btn-primary{% else %}btn-outline-primary{% endif %}">Товары</a>
+    <a href="{{ url_for('admin.admin_categories') }}" class="btn {% if request.endpoint.startswith('admin.admin_category') or request.endpoint.startswith('admin.add_category') or request.endpoint.startswith('admin.edit_category') %}btn-primary{% else %}btn-outline-primary{% endif %}">Категории</a>
+    <a href="{{ url_for('admin.admin_promo_codes') }}" class="btn {% if request.endpoint.startswith('admin.admin_promo_code') or request.endpoint.startswith('admin.add_promo_code') or request.endpoint.startswith('admin.edit_promo_code') %}btn-primary{% else %}btn-outline-primary{% endif %}">Промокоды</a>
+    {% if current_user.has_permission('manage_users') %}
+    <a href="{{ url_for('admin.admin_users') }}" class="btn {% if request.endpoint.startswith('admin.admin_user') %}btn-primary{% else %}btn-outline-primary{% endif %}">Пользователи</a>
+    {% endif %}
+    <a href="{{ url_for('admin.admin_reviews') }}" class="btn {% if request.endpoint.startswith('admin.admin_review') %}btn-primary{% else %}btn-outline-primary{% endif %}">Отзывы</a>
+    {% if current_user.has_permission('manage_users') %}
+    <a href="{{ url_for('admin.admin_subscribers') }}" class="btn {% if request.endpoint.startswith('admin.admin_subscriber') or request.endpoint.startswith('admin.admin_send_subscriber') %}btn-primary{% else %}btn-outline-primary{% endif %}">Подписчики</a>
+    {% endif %}
+</div>

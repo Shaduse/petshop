@@ -1,0 +1,14 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+    <h2>Здравствуйте!</h2>
+
+    <p>Мы рады подарить вам специальный промокод для покупок в нашем магазине PetShop.</p>
+
+    <p><strong>Ваш промокод:</strong> {{ promo_code.code }}</p>
+    <p><strong>Скидка:</strong> {{ promo_code.discount_value | int }}{% if promo_code.discount_type == 'percent' %}%{% else %} ₽{% endif %}</p>
+
+    <p>Используйте его при оформлении заказа.</p>
+
+    <p>С уважением,<br>Команда PetShop</p>
+{% endblock %}

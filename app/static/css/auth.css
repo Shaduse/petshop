@@ -1,0 +1,331 @@
+/* ============================================================================
+   AUTH PAGES STYLES
+   ============================================================================ */
+
+.auth-body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #512da8, #5c6bc0);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.auth-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    min-height: 500px;
+    overflow: hidden;
+}
+
+.form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-container h1 {
+    margin: 0 0 20px 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #512da8;
+}
+
+.form-container input,
+.form-container select {
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form-container input:focus,
+.form-container select:focus {
+    outline: none;
+    border-color: #512da8;
+    box-shadow: 0 0 0 3px rgba(81, 45, 168, 0.1);
+}
+
+.form-container a {
+    color: #512da8;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.form-container a:hover {
+    color: #ffc107;
+}
+
+.form-container button {
+    padding: 12px 15px;
+    background: #512da8;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+}
+
+.form-container button:hover {
+    background: #5c6bc0;
+    box-shadow: 0 4px 12px rgba(81, 45, 168, 0.3);
+}
+
+.sign-in {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+}
+
+.sign-up {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+}
+
+.container.right-panel-active .sign-in {
+    animation: slideOut 0.6s ease-in-out forwards;
+}
+
+.container.right-panel-active .sign-up {
+    animation: slideIn 0.6s ease-in-out forwards;
+    z-index: 5;
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+.toggle-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: all 0.6s ease-in-out;
+    z-index: 1000;
+}
+
+.container.right-panel-active .toggle-container {
+    transform: translateX(-100%);
+    z-index: 100;
+}
+
+.toggle {
+    background: linear-gradient(135deg, #512da8, #5c6bc0);
+    color: white;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+}
+
+.container.right-panel-active .toggle {
+    transform: translateX(50%);
+}
+
+.toggle-panel {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    transform: translateX(0);
+    z-index: 6;
+}
+
+.toggle-left {
+    transform: translateX(-200%);
+}
+
+.container.right-panel-active .toggle-left {
+    transform: translateX(0);
+}
+
+.toggle-right {
+    right: 0;
+    transform: translateX(0);
+}
+
+.container.right-panel-active .toggle-right {
+    transform: translateX(200%);
+}
+
+.toggle-panel h1 {
+    margin: 0 0 20px 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+}
+
+.toggle-panel p {
+    margin: 0 0 30px 0;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.toggle-panel button {
+    padding: 10px 40px;
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+}
+
+.toggle-panel button:hover {
+    background: white;
+    color: #512da8;
+}
+
+.toggle-panel button.hidden {
+    display: none;
+}
+
+.privacy-checkbox {
+    margin: 10px 0;
+}
+
+.privacy-checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #333;
+    cursor: pointer;
+}
+
+.privacy-checkbox input {
+    width: auto;
+    margin: 0;
+    cursor: pointer;
+}
+
+.privacy-checkbox a {
+    color: #512da8;
+    text-decoration: underline;
+}
+
+.privacy-checkbox a:hover {
+    color: #ffc107;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .auth-container {
+        max-width: 100%;
+        min-height: 600px;
+        border-radius: 0;
+    }
+
+    .form-container {
+        width: 100% !important;
+        position: static !important;
+        opacity: 1 !important;
+        z-index: auto !important;
+        padding: 30px 20px;
+    }
+
+    .form-container h1 {
+        font-size: 1.5rem;
+    }
+
+    .sign-up {
+        display: none;
+    }
+
+    .toggle-container {
+        display: none;
+    }
+
+    .container.right-panel-active .sign-in {
+        animation: none;
+    }
+
+    .container.right-panel-active .sign-up {
+        display: flex;
+        animation: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-container {
+        padding: 20px 15px;
+    }
+
+    .form-container h1 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+    }
+
+    .form-container input,
+    .form-container select,
+    .form-container button {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .form-container form {
+        gap: 12px;
+    }
+
+    .privacy-checkbox label {
+        font-size: 12px;
+    }
+}

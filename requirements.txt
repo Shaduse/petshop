@@ -1,0 +1,18 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-WTF==1.2.1
+Flask-Mail==0.9.1
+Flask-Babel==3.1.0
+google-genai
+google-generativeai
+Werkzeug==3.0.4
+SQLAlchemy==2.0.44
+python-dotenv==1.0.1
+WTForms==3.1.2
+Jinja2==3.1.4          # явно, чтобы не тянул старые версии
+itsdangerous==2.2.0
+click==8.1.7
+blinker==1.8.2
+email-validator==2.2.0  # нужен для WTForms Email
+Pillow
