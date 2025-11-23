@@ -354,13 +354,6 @@ function showNotification(message, type = 'info') {
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Форматирование цены с пробелами
-    function formatPrice(price) {
-        return new Intl.NumberFormat('ru-RU', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(price);
-    }
 
     // Обработка + / -
     document.querySelectorAll('.btn-plus, .btn-minus').forEach(button => {

@@ -49,7 +49,7 @@ class Role(db.Model):
         import json
         try:
             return json.loads(self.permissions)
-        except:
+        except (json.JSONDecodeError, TypeError):
             return []
 
     def set_permissions(self, perm_list):
